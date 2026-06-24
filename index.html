@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2D5A4A">
+  <meta name="description" content="Herramienta educativa de evaluación de factores de riesgo de demencia — Unidad de Memoria, Hospital Salvador">
+  <title>Salud Cerebral</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="favicon.svg">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div id="app" class="app">
+
+    <!-- ===================== BARRA DE PROGRESO (camino) ===================== -->
+    <header class="topbar" id="topbar" hidden>
+      <button class="icon-btn" id="btnAtras" aria-label="Volver a la pregunta anterior">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="progreso-camino" id="progresoCamino" role="progressbar" aria-valuemin="0" aria-valuemax="13" aria-valuenow="0">
+        <div class="progreso-rastro"></div>
+        <div class="progreso-relleno" id="progresoRelleno"></div>
+        <div class="progreso-pie" id="progresoPie">🧠</div>
+      </div>
+      <span class="progreso-texto" id="progresoTexto">Pregunta 1 de 13</span>
+    </header>
+
+    <main class="pantalla-contenedor" id="pantallaContenedor">
+
+      <!-- ===================== PANTALLA: INICIO ===================== -->
+      <section class="pantalla activa" id="pantallaInicio" data-pantalla="inicio">
+        <div class="tarjeta-inicio">
+          <div class="logo-cerebro" aria-hidden="true">🧠</div>
+          <h1>Salud Cerebral</h1>
+          <p class="subtitulo">Unidad de Memoria — Hospital Salvador</p>
+          <p class="descripcion">
+            Una evaluación breve y educativa sobre 13 factores de riesgo de
+            demencia, modificables, basada en evidencia científica internacional
+            y chilena.
+          </p>
+
+          <label class="campo">
+            <span class="campo-etiqueta">ID de paciente</span>
+            <input type="text" id="campoId" placeholder="Ej: paciente001" autocomplete="off">
+          </label>
+          <p class="campo-error" id="errorInicio" aria-live="polite"></p>
+
+          <button class="boton boton-primario" id="btnNuevaEvaluacion">Nueva evaluación</button>
+          <button class="boton boton-secundario" id="btnVerHistorial">Ver mi historial</button>
+
+          <p class="nota-legal">
+            Esta herramienta entrega estimaciones poblacionales con fines
+            educativos. No es un diagnóstico médico.
+          </p>
+        </div>
+      </section>
+
+      <!-- ===================== PANTALLA: PREGUNTA (plantilla genérica) ===================== -->
+      <section class="pantalla" id="pantallaPregunta" data-pantalla="pregunta">
+        <div class="tarjeta-pregunta">
+          <p class="pregunta-eyebrow" id="preguntaCategoria">Factor de riesgo</p>
+          <h2 class="pregunta-texto" id="preguntaTexto">¿Pregunta?</h2>
+          <p class="pregunta-ayuda" id="preguntaAyuda"></p>
+
+          <!-- Variante Sí/No -->
+          <div class="opciones-sino" id="opcionesSiNo">
+            <button class="boton-grande boton-si" id="btnSi">
+              <span class="boton-grande-icono">✓</span>
+              <span>Sí</span>
+            </button>
+            <button class="boton-grande boton-no" id="btnNo">
+              <span class="boton-grande-icono">✕</span>
+              <span>No</span>
+            </button>
+          </div>
+
+          <!-- Variante numérica (un campo) -->
+          <div class="opciones-numero" id="opcionesNumero" hidden>
+            <label class="campo campo-numero">
+              <span class="campo-etiqueta" id="numeroEtiqueta">Valor</span>
+              <input type="number" inputmode="decimal" id="campoNumero" class="campo-input-grande">
+              <span class="campo-unidad" id="numeroUnidad"></span>
+            </label>
+            <button class="boton boton-primario" id="btnSiguienteNumero">Siguiente →</button>
+          </div>
+
+          <!-- Variante peso/talla (dos campos) -->
+          <div class="opciones-pesotalla" id="opcionesPesoTalla" hidden>
+            <label class="campo campo-numero">
+              <span class="campo-etiqueta">Peso</span>
+              <input type="number" inputmode="decimal" id="campoPeso" class="campo-input-grande">
+              <span class="campo-unidad">kg</span>
+            </label>
+            <label class="campo campo-numero">
+              <span class="campo-etiqueta">Talla</span>
+              <input type="number" inputmode="decimal" id="campoTalla" class="campo-input-grande">
+              <span class="campo-unidad">cm</span>
+            </label>
+            <button class="boton boton-primario" id="btnSiguientePesoTalla">Calcular resultado →</button>
+          </div>
+
+          <p class="campo-error" id="errorPregunta" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <!-- ===================== PANTALLA: RESULTADO ===================== -->
+      <section class="pantalla" id="pantallaResultado" data-pantalla="resultado">
+        <div class="tarjeta-resultado">
+          <h2>Tu resultado</h2>
+          <p class="resultado-intro">
+            Estos porcentajes estiman cuánto del riesgo de demencia, a nivel
+            poblacional, se asocia a factores que pueden modificarse.
+          </p>
+
+          <div class="resultado-modelo" id="resultadoLancetCard">
+            <div class="resultado-modelo-cabecera">
+              <span class="resultado-modelo-nombre">Modelo global</span>
+              <span class="resultado-modelo-fuente">Lancet Commission 2024</span>
+            </div>
+            <div class="resultado-anillo" id="anilloLancet">
+              <svg viewBox="0 0 120 120" class="anillo-svg">
+                <circle cx="60" cy="60" r="52" class="anillo-fondo"/>
+                <circle cx="60" cy="60" r="52" class="anillo-progreso" id="anilloLancetCirculo"/>
+              </svg>
+              <span class="anillo-valor" id="valorLancet">0%</span>
+            </div>
+          </div>
+
+          <div class="resultado-modelo" id="resultadoChileCard">
+            <div class="resultado-modelo-cabecera">
+              <span class="resultado-modelo-nombre">Modelo Chile</span>
+              <span class="resultado-modelo-fuente">Paradela et al. 2024</span>
+            </div>
+            <div class="resultado-anillo" id="anilloChile">
+              <svg viewBox="0 0 120 120" class="anillo-svg">
+                <circle cx="60" cy="60" r="52" class="anillo-fondo"/>
+                <circle cx="60" cy="60" r="52" class="anillo-progreso anillo-progreso--chile" id="anilloChileCirculo"/>
+              </svg>
+              <span class="anillo-valor" id="valorChile">0%</span>
+            </div>
+          </div>
+
+          <details class="resultado-detalle">
+            <summary>Ver factores detectados en esta evaluación</summary>
+            <div id="listaFactoresDetectados" class="lista-factores"></div>
+          </details>
+
+          <p class="nota-legal nota-legal--resultado">
+            Estos porcentajes son estimaciones poblacionales de fracción
+            atribuible (PAF), no un diagnóstico ni una probabilidad individual
+            exacta de desarrollar demencia. El modelo chileno es probablemente
+            conservador frente a métodos más complejos. Úsalo como herramienta
+            educativa e indicativa, y comenta tus resultados con tu equipo de
+            salud.
+          </p>
+
+          <button class="boton boton-primario" id="btnVolverInicio">Volver al inicio</button>
+        </div>
+      </section>
+
+      <!-- ===================== PANTALLA: HISTORIAL ===================== -->
+      <section class="pantalla" id="pantallaHistorial" data-pantalla="historial">
+        <div class="tarjeta-historial">
+          <h2>Tu historial</h2>
+          <p class="subtitulo" id="historialIdPaciente"></p>
+
+          <div id="listaHistorial" class="lista-historial">
+            <!-- se llena dinámicamente -->
+          </div>
+          <p class="historial-vacio" id="historialVacio" hidden>
+            Aún no hay evaluaciones guardadas para este ID de paciente.
+          </p>
+
+          <button class="boton boton-secundario" id="btnVolverDesdeHistorial">← Volver</button>
+        </div>
+      </section>
+
+    </main>
+
+    <div class="instalar-banner" id="instalarBanner" hidden>
+      <span id="instalarTexto">Instala Salud Cerebral en tu celular para usarla sin conexión.</span>
+      <button class="boton boton-pequeno" id="btnInstalar">Instalar</button>
+      <button class="icon-btn" id="btnCerrarInstalar" aria-label="Cerrar aviso">✕</button>
+    </div>
+
+  </div>
+
+  <script src="calculo.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

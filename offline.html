@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sin conexión — Salud Cerebral</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #FBF6EE;
+      color: #233029;
+      text-align: center;
+      padding: 24px;
+    }
+    .caja { max-width: 360px; }
+    .emoji { font-size: 48px; margin-bottom: 12px; }
+    h1 { font-size: 20px; color: #2D5A4A; margin: 0 0 8px; }
+    p { font-size: 15px; color: #5C6B64; line-height: 1.5; }
+    button {
+      margin-top: 20px;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 12px;
+      background: #2D5A4A;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="caja">
+    <div class="emoji">📡</div>
+    <h1>Sin conexión</h1>
+    <p>No se pudo cargar esta página porque no había una versión guardada para usarla sin conexión. Conéctate a internet una vez para que la app quede disponible offline.</p>
+    <button onclick="location.href='./index.html'">Reintentar</button>
+  </div>
+</body>
+</html>
